@@ -1,3 +1,11 @@
+@font-face {
+  font-family: 'InnovatorGrotesk';
+  src: url('../assets/InnovatorGrotesk-Regular.woff2')
+    format('woff2-variations');
+  font-weight: 400;
+  font-style: normal;
+}
+
 *,
 *::before,
 *::after {
@@ -7,15 +15,21 @@
 }
 body {
   font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-  background: #f7f7f5;
+    'InnovatorGrotesk',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Helvetica,
+    Arial,
+    sans-serif;
+  background: #f6f6f6;
   color: #1a1a1a;
   font-size: 1rem;
   line-height: 1.6;
   min-height: 100vh;
 }
 .header {
-  background: #1a1a1a;
+  background: #211d27;
   color: #fff;
   padding: 20px 32px;
   display: flex;
@@ -36,10 +50,10 @@ body {
   font-weight: 500;
 }
 .progress-bar-wrap {
-  background: #1a1a1a;
+  background: #211d27;
   padding: 0 32px 18px;
   position: sticky;
-  top: 61px;
+  top: 65px;
   z-index: 99;
 }
 .progress-track {
@@ -93,13 +107,13 @@ body {
   font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #aaa;
+  color: #7d7b82;
   margin-bottom: 7px;
 }
 .section-title {
   font-size: 1.5rem;
   font-weight: 650;
-  color: #1a1a1a;
+  color: #211d27;
   margin-bottom: 14px;
   line-height: 1.25;
 }
@@ -120,7 +134,7 @@ body {
 .q-label {
   font-size: 1rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #211d27;
   margin-bottom: 5px;
 }
 .q-label .req {
@@ -129,7 +143,7 @@ body {
 }
 .q-hint {
   font-size: 0.875rem;
-  color: #888;
+  color: #7d7b82;
   margin-bottom: 10px;
   line-height: 1.55;
 }
@@ -186,7 +200,7 @@ textarea.tall {
   background: #f2f2f0;
 }
 .option-item.selected {
-  border-color: #1a1a1a;
+  border-color: #211d27;
   background: #f2f2f0;
 }
 .option-item input[type='radio'],
@@ -194,7 +208,7 @@ textarea.tall {
   width: 17px;
   height: 17px;
   cursor: pointer;
-  accent-color: #1a1a1a;
+  accent-color: #211d27;
   flex-shrink: 0;
 }
 .option-item span {
@@ -202,7 +216,7 @@ textarea.tall {
 }
 .checkbox-cap {
   font-size: 0.75rem;
-  color: #bbb;
+  color: #7d7b82;
   margin-bottom: 9px;
 }
 .scale-outer {
@@ -215,7 +229,7 @@ textarea.tall {
 }
 .scale-poles span {
   font-size: 0.75rem;
-  color: #888;
+  color: #7d7b82;
   max-width: 46%;
   line-height: 1.3;
 }
@@ -242,7 +256,7 @@ textarea.tall {
   width: 19px;
   height: 19px;
   cursor: pointer;
-  accent-color: #1a1a1a;
+  accent-color: #211d27;
 }
 .field-error {
   font-size: 0.75rem;
@@ -279,23 +293,23 @@ textarea.invalid {
   transition: background 0.14s;
 }
 .btn-primary {
-  background: #1a1a1a;
+  background: #211d27;
   color: #fff;
 }
 .btn-primary:hover {
-  background: #2e2e2e;
+  background: #3a3a3a;
 }
 .btn-ghost {
   background: transparent;
-  color: #777;
+  color: #7d7b82;
   border: 1.5px solid #e0e0e0;
 }
 .btn-ghost:hover {
-  border-color: #aaa;
-  color: #1a1a1a;
+  border-color: #7d7b82;
+  color: #211d27;
 }
 .btn-dl {
-  background: #1a1a1a;
+  background: #211d27;
   color: #fff;
   font-size: 1rem;
 }
@@ -304,8 +318,8 @@ textarea.invalid {
 }
 .btn-em {
   background: #fff;
-  color: #1a1a1a;
-  border: 1.5px solid #1a1a1a;
+  color: #211d27;
+  border: 1.5px solid #211d27;
   font-size: 1rem;
 }
 .btn-em:hover {
