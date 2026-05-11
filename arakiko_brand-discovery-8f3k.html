@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arakiko — Brand Discovery</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+      background: #f7f7f5;
+      color: #1a1a1a;
+      font-size: 16px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    .header {
+      background: #1a1a1a;
+      color: #fff;
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-brand { font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.45; }
+    .header-client { font-size: 15px; font-weight: 500; }
+    .progress-bar-wrap {
+      background: #1a1a1a;
+      padding: 0 32px 18px;
+      position: sticky;
+      top: 61px;
+      z-index: 99;
+    }
+    .progress-track { background: rgba(255,255,255,0.12); border-radius: 99px; height: 2px; overflow: hidden; }
+    .progress-fill { background: #fff; height: 100%; border-radius: 99px; transition: width 0.45s ease; }
+    .progress-label { color: rgba(255,255,255,0.38); font-size: 11px; letter-spacing: 0.07em; text-transform: uppercase; margin-top: 9px; }
+    .main { max-width: 700px; margin: 0 auto; padding: 52px 24px 100px; }
+    .section-card { background: #fff; border-radius: 14px; padding: 44px 52px; box-shadow: 0 1px 4px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04); display: none; }
+    .section-card.active { display: block; animation: fadeIn 0.22s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    .section-eyebrow { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #aaa; margin-bottom: 7px; }
+    .section-title { font-size: 23px; font-weight: 650; color: #1a1a1a; margin-bottom: 14px; line-height: 1.25; }
+    .section-desc { font-size: 14.5px; color: #666; line-height: 1.7; margin-bottom: 38px; padding-left: 16px; border-left: 2px solid #ebebeb; }
+    .question { margin-bottom: 30px; }
+    .question:last-of-type { margin-bottom: 0; }
+    .q-label { font-size: 15px; font-weight: 600; color: #1a1a1a; margin-bottom: 5px; }
+    .q-label .req { color: #c0392b; font-size: 13px; }
+    .q-hint { font-size: 13px; color: #888; margin-bottom: 10px; line-height: 1.55; }
+    input[type="text"], input[type="email"], textarea {
+      width: 100%; border: 1.5px solid #e2e2e2; border-radius: 8px;
+      padding: 11px 14px; font-size: 15px; font-family: inherit; color: #1a1a1a;
+      background: #fafafa; transition: border-color 0.18s, background 0.18s; resize: vertical;
+    }
+    input[type="text"]:focus, input[type="email"]:focus, textarea:focus {
+      outline: none; border-color: #1a1a1a; background: #fff;
+    }
+    textarea { min-height: 96px; }
+    textarea.tall { min-height: 130px; }
+    .options-list { display: flex; flex-direction: column; gap: 9px; }
+    .option-item {
+      display: flex; align-items: center; gap: 12px; padding: 11px 14px;
+      border: 1.5px solid #e2e2e2; border-radius: 8px; cursor: pointer;
+      transition: border-color 0.14s, background 0.14s; background: #fafafa; user-select: none;
+    }
+    .option-item:hover { border-color: #aaa; background: #f2f2f0; }
+    .option-item.selected { border-color: #1a1a1a; background: #f2f2f0; }
+    .option-item input[type="radio"], .option-item input[type="checkbox"] {
+      width: 17px; height: 17px; cursor: pointer; accent-color: #1a1a1a; flex-shrink: 0;
+    }
+    .option-item span { font-size: 15px; }
+    .checkbox-cap { font-size: 12px; color: #bbb; margin-bottom: 9px; }
+    .scale-outer { margin-top: 2px; }
+    .scale-poles { display: flex; justify-content: space-between; margin-bottom: 9px; }
+    .scale-poles span { font-size: 12.5px; color: #888; max-width: 46%; line-height: 1.3; }
+    .scale-poles span:last-child { text-align: right; }
+    .scale-row { display: flex; gap: 8px; }
+    .scale-cell { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    .scale-cell label { font-size: 12px; color: #aaa; cursor: pointer; }
+    .scale-cell input[type="radio"] { width: 19px; height: 19px; cursor: pointer; accent-color: #1a1a1a; }
+    .field-error { font-size: 12px; color: #c0392b; margin-top: 5px; display: none; }
+    .field-error.show { display: block; }
+    input.invalid, textarea.invalid { border-color: #e74c3c; }
+    .nav { display: flex; align-items: center; justify-content: space-between; margin-top: 40px; padding-top: 30px; border-top: 1px solid #ebebeb; }
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 11px 22px; border-radius: 8px; font-size: 15px; font-weight: 500; cursor: pointer; border: none; font-family: inherit; transition: background 0.14s; }
+    .btn-primary { background: #1a1a1a; color: #fff; }
+    .btn-primary:hover { background: #2e2e2e; }
+    .btn-ghost { background: transparent; color: #777; border: 1.5px solid #e0e0e0; }
+    .btn-ghost:hover { border-color: #aaa; color: #1a1a1a; }
+    .btn-dl { background: #1a1a1a; color: #fff; font-size: 15px; }
+    .btn-dl:hover { background: #333; }
+    .btn-em { background: #fff; color: #1a1a1a; border: 1.5px solid #1a1a1a; font-size: 15px; }
+    .btn-em:hover { background: #f4f4f2; }
+    .done { text-align: center; padding: 12px 0 4px; }
+    .done-mark { font-size: 52px; margin-bottom: 18px; }
+    .done h2 { font-size: 26px; font-weight: 650; margin-bottom: 12px; }
+    .done p { font-size: 15.5px; color: #555; line-height: 1.7; max-width: 420px; margin: 0 auto 32px; }
+    .done-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    @media (max-width: 580px) {
+      .section-card { padding: 28px 22px; }
+      .header, .progress-bar-wrap { padding-left: 18px; padding-right: 18px; }
+      .main { padding: 32px 14px 80px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <span class="header-brand">Brand Discovery</span>
+  <span class="header-client">Arakiko</span>
+</div>
+<div class="progress-bar-wrap">
+  <div class="progress-track"><div class="progress-fill" id="pFill" style="width:0%"></div></div>
+  <div class="progress-label" id="pLabel">Section 1 of 9</div>
+</div>
+
+<div class="main">
+
+<!-- ── SECTION 1 ── About you ─────────────────────────────────────── -->
+<div class="section-card active" data-section="1">
+  <div class="section-eyebrow">Section 1 of 9</div>
+  <h2 class="section-title">Arakiko — Brand Discovery</h2>
+  <p class="section-desc">This questionnaire will help us understand your brand's context, ambitions, and requirements for a new website. The output guides our creative process as we work together. All key decision makers should complete this separately.</p>
+
+  <div class="question">
+    <div class="q-label">Your name <span class="req">*</span></div>
+    <input type="text" id="q_name" placeholder="First and last name" data-req="1">
+    <div class="field-error" id="e_q_name">Please enter your name.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Email address <span class="req">*</span></div>
+    <input type="email" id="q_email" placeholder="you@arakiko.com" data-req="1" data-email="1">
+    <div class="field-error" id="e_q_email">Please enter a valid email address.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Your current role <span class="req">*</span></div>
+    <input type="text" id="q_role" placeholder="e.g. Founder, Creative Director" data-req="1">
+    <div class="field-error" id="e_q_role">Please enter your role.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">What is Arakiko about? <span class="req">*</span></div>
+    <div class="q-hint">Describe the brand as specifically as possible — the product, what problem it solves, and how it's different from what's already out there.</div>
+    <textarea id="q_about" class="tall" placeholder="Your answer…" data-req="1"></textarea>
+    <div class="field-error" id="e_q_about">Please answer this question.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">What are your customers saying about you?</div>
+    <div class="q-hint">Or, as a new brand, what do you hope they'll say?</div>
+    <textarea id="q_customers_say" placeholder="Your answer…"></textarea>
+  </div>
+
+  <div class="nav"><div></div><button class="btn btn-primary" onclick="next()">Next →</button></div>
+</div>
+
+<!-- ── SECTION 2 ── Business and growth context ───────────────────── -->
+<div class="section-card" data-section="2">
+  <div class="section-eyebrow">Section 2 of 9</div>
+  <h2 class="section-title">Business and growth context</h2>
+  <p class="section-desc">Understanding where you are and where you're heading shapes every creative decision we make. Be as honest as you like — this is internal context, not a pitch.</p>
+
+  <div class="question">
+    <div class="q-label">What stage is Arakiko currently in? <span class="req">*</span></div>
+    <div class="options-list" id="q_stage" data-type="radio" data-req="1">
+      <label class="option-item"><input type="radio" name="q_stage" value="Pre-revenue — product not yet launched"><span>Pre-revenue — product not yet launched</span></label>
+      <label class="option-item"><input type="radio" name="q_stage" value="Early stage — product launched, building traction"><span>Early stage — product launched, building traction</span></label>
+      <label class="option-item"><input type="radio" name="q_stage" value="Scaling — revenue growing, expanding distribution"><span>Scaling — revenue growing, expanding distribution</span></label>
+      <label class="option-item"><input type="radio" name="q_stage" value="Established — stable revenue, refreshing brand"><span>Established — stable revenue, refreshing brand</span></label>
+    </div>
+    <div class="field-error" id="e_q_stage">Please select an option.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">What stage are you moving toward in the next 12–24 months?</div>
+    <input type="text" id="q_stage_next" placeholder="e.g. Retail distribution across NZ, first export market…">
+  </div>
+  <div class="question">
+    <div class="q-label">What is currently unclear, misaligned, or frustrating about your positioning?</div>
+    <textarea id="q_positioning_frustration" class="tall" placeholder="Your answer…"></textarea>
+  </div>
+  <div class="question">
+    <div class="q-label">What conversations are currently harder than they should be?</div>
+    <div class="q-hint">e.g. Explaining what the product is, pitching to distributors, justifying the price point…</div>
+    <textarea id="q_hard_convos" placeholder="Your answer…"></textarea>
+  </div>
+  <div class="question">
+    <div class="q-label">If this project succeeds, what becomes easier?</div>
+    <textarea id="q_success_easier" class="tall" placeholder="Your answer…"></textarea>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-ghost" onclick="prev()">← Back</button>
+    <button class="btn btn-primary" onclick="next()">Next →</button>
+  </div>
+</div>
+
+<!-- ── SECTION 3 ── Competitive and market context ────────────────── -->
+<div class="section-card" data-section="3">
+  <div class="section-eyebrow">Section 3 of 9</div>
+  <h2 class="section-title">Competitive and market context</h2>
+  <p class="section-desc">Understanding your landscape helps us position Arakiko with precision — not just against competitors, but in relation to how the market currently understands the category.</p>
+
+  <div class="question">
+    <div class="q-label">Where is Arakiko located and where are you selling?</div>
+    <div class="q-hint">Is it NZ-only right now? Are you looking at export markets?</div>
+    <textarea id="q_location" placeholder="Your answer…"></textarea>
+  </div>
+  <div class="question">
+    <div class="q-label">Who are your top 3–5 competitors? <span class="req">*</span></div>
+    <div class="q-hint">Share brands with similar products or positioning. Include website URLs and social media if you have them.</div>
+    <textarea id="q_competitors" class="tall" placeholder="e.g. Sentia (sentiaspirits.com), Ārepa (arepa.co.nz)…" data-req="1"></textarea>
+    <div class="field-error" id="e_q_competitors">Please name at least your main competitors.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">When you lose a sale, who wins and why?</div>
+    <div class="q-hint">This reveals how buyers perceive trade-offs in your category and where your positioning may be unclear.</div>
+    <textarea id="q_lose_sale" placeholder="Your answer…"></textarea>
+  </div>
+  <div class="question">
+    <div class="q-label">Where are you commonly compared or confused with others?</div>
+    <textarea id="q_compared" placeholder="e.g. People often think we're a kombucha, or confuse us with Ārepa…"></textarea>
+  </div>
+  <div class="question">
+    <div class="q-label">What category do customers currently think Arakiko is in?</div>
+    <div class="q-hint">Is that accurate? If not, what category do you want to own?</div>
+    <textarea id="q_category" placeholder="Your answer…"></textarea>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-ghost" onclick="prev()">← Back</button>
+    <button class="btn btn-primary" onclick="next()">Next →</button>
+  </div>
+</div>
+
+<!-- ── SECTION 4 ── Differentiation and offer clarity ─────────────── -->
+<div class="section-card" data-section="4">
+  <div class="section-eyebrow">Section 4 of 9</div>
+  <h2 class="section-title">Differentiation and offer clarity</h2>
+  <p class="section-desc">This section helps us identify the strategic promise that drives growth — what you're known for, where you win, and why the right customers choose you.</p>
+
+  <div class="question">
+    <div class="q-label">Why would someone choose Arakiko over a competitor? <span class="req">*</span></div>
+    <textarea id="q_why_choose" class="tall" placeholder="Your answer…" data-req="1"></textarea>
+    <div class="field-error" id="e_q_why_choose">Please answer this question.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Complete this sentence: "We're not the right choice if you want…"</div>
+    <textarea id="q_not_right" placeholder="e.g. …a sugary flavoured mixer, a CBD drink, or something widely available at the dairy."></textarea>
+  </div>
+  <div class="question">
+    <div class="q-label">Our "flag in the ground" promise is… <span class="req">*</span></div>
+    <div class="q-hint">One sentence. The thing you'd never compromise on, even under pressure.</div>
+    <textarea id="q_flag" placeholder="Your answer…" data-req="1"></textarea>
+    <div class="field-error" id="e_q_flag">Please answer this question.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">What do you want Arakiko to be primarily known for?</div>
+    <textarea id="q_known_for" placeholder="Your answer…"></textarea>
+  </div>
+  <div class="question">
+    <div class="q-label">Are there any claims about what Arakiko does that you're legally required to avoid?</div>
+    <div class="q-hint">Functional drinks often operate under regulatory constraints around health claims. How do you currently navigate this in your messaging?</div>
+    <textarea id="q_claims" class="tall" placeholder="Your answer…"></textarea>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-ghost" onclick="prev()">← Back</button>
+    <button class="btn btn-primary" onclick="next()">Next →</button>
+  </div>
+</div>
+
+<!-- ── SECTION 5 ── Identity and brand expression ─────────────────── -->
+<div class="section-card" data-section="5">
+  <div class="section-eyebrow">Section 5 of 9</div>
+  <h2 class="section-title">Identity and brand expression</h2>
+  <p class="section-desc">A strong identity starts with clarity about who the brand is for — and who it isn't. Describe one realistic, specific person who represents your primary target.</p>
+
+  <div class="question">
+    <div class="q-label">Arakiko is primarily: <span class="req">*</span></div>
+    <div class="options-list" id="q_biz_type" data-type="radio" data-req="1">
+      <label class="option-item"><input type="radio" name="q_biz_type" value="B2C — selling direct to consumers"><span>B2C — selling direct to consumers</span></label>
+      <label class="option-item"><input type="radio" name="q_biz_type" value="B2B — selling to businesses or trade accounts"><span>B2B — selling to businesses or trade accounts</span></label>
+      <label class="option-item"><input type="radio" name="q_biz_type" value="Hybrid — both consumers and trade"><span>Hybrid — both consumers and trade</span></label>
+    </div>
+    <div class="field-error" id="e_q_biz_type">Please select an option.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Who is the primary buyer? <span class="req">*</span></div>
+    <div class="q-hint">The person who ultimately chooses and pays — even if others influence the decision.</div>
+    <input type="text" id="q_primary_buyer" placeholder="e.g. Health-conscious professional in their 30s…" data-req="1">
+    <div class="field-error" id="e_q_primary_buyer">Please answer this question.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">What problem are they actively trying to solve?</div>
+    <input type="text" id="q_buyer_problem" placeholder="e.g. Want to socialise without the effects of alcohol…">
+  </div>
+  <div class="question">
+    <div class="q-label">What typically triggers them to make a purchase?</div>
+    <textarea id="q_buyer_trigger" placeholder="Your answer…"></textarea>
+  </div>
+  <div class="question">
+    <div class="q-label">What objections or hesitations might they have?</div>
+    <textarea id="q_buyer_objections" placeholder="e.g. Unsure if it will taste good, unfamiliar with GABA, price…"></textarea>
+  </div>
+  <div class="question">
+    <div class="q-label">Who is NOT the right customer for Arakiko?</div>
+    <textarea id="q_not_buyer" placeholder="Your answer…"></textarea>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-ghost" onclick="prev()">← Back</button>
+    <button class="btn btn-primary" onclick="next()">Next →</button>
+  </div>
+</div>
+
+<!-- ── SECTION 6 ── Audience profile ──────────────────────────────── -->
+<div class="section-card" data-section="6">
+  <div class="section-eyebrow">Section 6 of 9</div>
+  <h2 class="section-title">Audience profile and decision psychology</h2>
+  <p class="section-desc">Now let's get specific. Describe the one person most likely to discover Arakiko and become a loyal customer.</p>
+
+  <div class="question">
+    <div class="q-label">Gender <span class="req">*</span></div>
+    <div class="options-list" id="q_gender" data-type="radio" data-req="1">
+      <label class="option-item"><input type="radio" name="q_gender" value="Male"><span>Male</span></label>
+      <label class="option-item"><input type="radio" name="q_gender" value="Female"><span>Female</span></label>
+      <label class="option-item"><input type="radio" name="q_gender" value="Non-binary / fluid"><span>Non-binary / fluid</span></label>
+      <label class="option-item"><input type="radio" name="q_gender" value="All / gender not relevant"><span>All / gender not relevant</span></label>
+    </div>
+    <div class="field-error" id="e_q_gender">Please select an option.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Age <span class="req">*</span></div>
+    <div class="options-list" id="q_age" data-type="radio" data-req="1">
+      <label class="option-item"><input type="radio" name="q_age" value="Under 25"><span>Under 25</span></label>
+      <label class="option-item"><input type="radio" name="q_age" value="25–35"><span>25–35</span></label>
+      <label class="option-item"><input type="radio" name="q_age" value="35–50"><span>35–50</span></label>
+      <label class="option-item"><input type="radio" name="q_age" value="50–65"><span>50–65</span></label>
+      <label class="option-item"><input type="radio" name="q_age" value="Over 65"><span>Over 65</span></label>
+    </div>
+    <div class="field-error" id="e_q_age">Please select an option.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Education <span class="req">*</span></div>
+    <div class="options-list" id="q_edu" data-type="radio" data-req="1">
+      <label class="option-item"><input type="radio" name="q_edu" value="High school"><span>High school</span></label>
+      <label class="option-item"><input type="radio" name="q_edu" value="University / Bachelor's"><span>University / Bachelor's</span></label>
+      <label class="option-item"><input type="radio" name="q_edu" value="Postgraduate"><span>Postgraduate</span></label>
+      <label class="option-item"><input type="radio" name="q_edu" value="Education not relevant"><span>Education not relevant</span></label>
+    </div>
+    <div class="field-error" id="e_q_edu">Please select an option.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Where do they live? <span class="req">*</span></div>
+    <input type="text" id="q_city" placeholder="Name one city or town" data-req="1">
+    <div class="field-error" id="e_q_city">Please enter a city or town.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Occupation <span class="req">*</span></div>
+    <input type="text" id="q_occupation" placeholder="What do they do for a living?" data-req="1">
+    <div class="field-error" id="e_q_occupation">Please enter their occupation.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Annual income (NZD) <span class="req">*</span></div>
+    <div class="options-list" id="q_income" data-type="radio" data-req="1">
+      <label class="option-item"><input type="radio" name="q_income" value="Under $40k"><span>Under $40k</span></label>
+      <label class="option-item"><input type="radio" name="q_income" value="$40–60k"><span>$40–60k</span></label>
+      <label class="option-item"><input type="radio" name="q_income" value="$60–90k"><span>$60–90k</span></label>
+      <label class="option-item"><input type="radio" name="q_income" value="$90–150k"><span>$90–150k</span></label>
+      <label class="option-item"><input type="radio" name="q_income" value="$150k+"><span>$150k+</span></label>
+    </div>
+    <div class="field-error" id="e_q_income">Please select an option.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">What problem are they actively trying to solve?</div>
+    <div class="q-hint">What feels broken, inefficient, or unsatisfying in their current situation that Arakiko addresses?</div>
+    <textarea id="q_aud_problem" class="tall" placeholder="Your answer…"></textarea>
+  </div>
+  <div class="question">
+    <div class="q-label">What typically triggers them to start looking for a solution?</div>
+    <div class="q-hint">A specific event, frustration, or opportunity that prompts action.</div>
+    <textarea id="q_aud_trigger" placeholder="Your answer…"></textarea>
+  </div>
+  <div class="question">
+    <div class="q-label">What objections might prevent them from choosing Arakiko?</div>
+    <textarea id="q_aud_objections" placeholder="e.g. Price, unfamiliarity with the category, unsure if it will work…"></textarea>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-ghost" onclick="prev()">← Back</button>
+    <button class="btn btn-primary" onclick="next()">Next →</button>
+  </div>
+</div>
+
+<!-- ── SECTION 7 ── Lifestyle, values and personality ─────────────── -->
+<div class="section-card" data-section="7">
+  <div class="section-eyebrow">Section 7 of 9</div>
+  <h2 class="section-title">Lifestyle, values and personality</h2>
+  <p class="section-desc">Creating an emotional connection with people drives loyalty. The more we understand what makes your target audience tick, the more relevant the connection between Arakiko and them.</p>
+
+  <div class="question">
+    <div class="q-label">What wellness, lifestyle or cultural brands does your customer gravitate toward? <span class="req">*</span></div>
+    <div class="q-hint">Think beyond drink brands — fitness, fashion, food, media. Any brands they trust and aspire to.</div>
+    <textarea id="q_lifestyle_brands" placeholder="e.g. Lululemon, Whoop, Frank Green, Headspace…" data-req="1"></textarea>
+    <div class="field-error" id="e_q_lifestyle_brands">Please answer this question.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Where does your target customer work? <span class="req">*</span></div>
+    <div class="options-list" id="q_work" data-type="radio" data-req="1">
+      <label class="option-item"><input type="radio" name="q_work" value="Large corporate office"><span>Large corporate office</span></label>
+      <label class="option-item"><input type="radio" name="q_work" value="At home / remote"><span>At home / remote</span></label>
+      <label class="option-item"><input type="radio" name="q_work" value="Co-working space"><span>Co-working space</span></label>
+      <label class="option-item"><input type="radio" name="q_work" value="Startup or small studio"><span>Startup or small studio</span></label>
+      <label class="option-item"><input type="radio" name="q_work" value="Hospitality / service industry"><span>Hospitality / service industry</span></label>
+      <label class="option-item"><input type="radio" name="q_work" value="Mix of the above"><span>Mix of the above</span></label>
+    </div>
+    <div class="field-error" id="e_q_work">Please select an option.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">What are their hobbies and how do they spend their free time? <span class="req">*</span></div>
+    <input type="text" id="q_hobbies" placeholder="e.g. Running, yoga, cooking, gigs, festivals…" data-req="1">
+    <div class="field-error" id="e_q_hobbies">Please answer this question.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">What is your target customer's current relationship with alcohol? <span class="req">*</span></div>
+    <div class="q-hint">Are they actively reducing, taking a break, never drinking, or simply looking for more options on some occasions?</div>
+    <div class="options-list" id="q_alcohol_rel" data-type="radio" data-req="1">
+      <label class="option-item"><input type="radio" name="q_alcohol_rel" value="Actively reducing their alcohol intake"><span>Actively reducing their alcohol intake</span></label>
+      <label class="option-item"><input type="radio" name="q_alcohol_rel" value="Taking a longer break from alcohol"><span>Taking a longer break from alcohol</span></label>
+      <label class="option-item"><input type="radio" name="q_alcohol_rel" value="Don't drink — looking for a great alternative"><span>Don't drink — looking for a great alternative</span></label>
+      <label class="option-item"><input type="radio" name="q_alcohol_rel" value="Still drink but want options on some occasions"><span>Still drink but want options on some occasions</span></label>
+      <label class="option-item"><input type="radio" name="q_alcohol_rel" value="Not defined by alcohol either way"><span>Not defined by alcohol either way</span></label>
+    </div>
+    <div class="field-error" id="e_q_alcohol_rel">Please select an option.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">When does someone reach for Arakiko instead of something else? Name the moment. <span class="req">*</span></div>
+    <div class="q-hint">e.g. Friday afternoon wind-down, hosting guests who don't drink, 3pm at the desk, post-sport…</div>
+    <input type="text" id="q_occasion" placeholder="Describe the moment…" data-req="1">
+    <div class="field-error" id="e_q_occasion">Please answer this question.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Is there anything else you'd like to share about your target audience?</div>
+    <textarea id="q_audience_other" placeholder="Any detail is welcome — the small stuff often matters most."></textarea>
+  </div>
+  <div class="question">
+    <div class="q-label">Which are the most relevant values for Arakiko? <span class="req">*</span></div>
+    <div class="checkbox-cap">Select up to five.</div>
+    <div class="options-list" id="q_values" data-type="checkbox" data-req="1" data-max="5">
+      <label class="option-item"><input type="checkbox" value="Authenticity"><span>Authenticity</span></label>
+      <label class="option-item"><input type="checkbox" value="Consistency"><span>Consistency</span></label>
+      <label class="option-item"><input type="checkbox" value="Quality"><span>Quality</span></label>
+      <label class="option-item"><input type="checkbox" value="Passion"><span>Passion</span></label>
+      <label class="option-item"><input type="checkbox" value="Relevance"><span>Relevance</span></label>
+      <label class="option-item"><input type="checkbox" value="Innovation"><span>Innovation</span></label>
+      <label class="option-item"><input type="checkbox" value="Responsibility"><span>Responsibility</span></label>
+      <label class="option-item"><input type="checkbox" value="Empathy"><span>Empathy</span></label>
+      <label class="option-item"><input type="checkbox" value="Community"><span>Community</span></label>
+      <label class="option-item"><input type="checkbox" value="Integrity"><span>Integrity</span></label>
+      <label class="option-item"><input type="checkbox" value="Sustainability"><span>Sustainability</span></label>
+      <label class="option-item"><input type="checkbox" value="Transparency"><span>Transparency</span></label>
+      <label class="option-item"><input type="checkbox" value="Courage"><span>Courage</span></label>
+      <label class="option-item"><input type="checkbox" value="Pleasure"><span>Pleasure</span></label>
+    </div>
+    <div class="field-error" id="e_q_values">Please select at least one value.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Which adjectives describe Arakiko most accurately? <span class="req">*</span></div>
+    <div class="checkbox-cap">Select up to five.</div>
+    <div class="options-list" id="q_adjectives" data-type="checkbox" data-req="1" data-max="5">
+      <label class="option-item"><input type="checkbox" value="Cool"><span>Cool</span></label>
+      <label class="option-item"><input type="checkbox" value="Funny"><span>Funny</span></label>
+      <label class="option-item"><input type="checkbox" value="Loyal"><span>Loyal</span></label>
+      <label class="option-item"><input type="checkbox" value="High-end"><span>High-end</span></label>
+      <label class="option-item"><input type="checkbox" value="Irreverent"><span>Irreverent</span></label>
+      <label class="option-item"><input type="checkbox" value="Bold"><span>Bold</span></label>
+      <label class="option-item"><input type="checkbox" value="Imaginative"><span>Imaginative</span></label>
+      <label class="option-item"><input type="checkbox" value="Edgy"><span>Edgy</span></label>
+      <label class="option-item"><input type="checkbox" value="Warm"><span>Warm</span></label>
+      <label class="option-item"><input type="checkbox" value="Clever"><span>Clever</span></label>
+      <label class="option-item"><input type="checkbox" value="Human"><span>Human</span></label>
+      <label class="option-item"><input type="checkbox" value="Expert"><span>Expert</span></label>
+      <label class="option-item"><input type="checkbox" value="Approachable"><span>Approachable</span></label>
+      <label class="option-item"><input type="checkbox" value="Sophisticated"><span>Sophisticated</span></label>
+      <label class="option-item"><input type="checkbox" value="Magical"><span>Magical</span></label>
+      <label class="option-item"><input type="checkbox" value="Calm"><span>Calm</span></label>
+    </div>
+    <div class="field-error" id="e_q_adjectives">Please select at least one adjective.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">What brands inspire Arakiko? <span class="req">*</span></div>
+    <div class="q-hint">List three brands (any category) that serve as references. Explain why. Include web addresses where possible.</div>
+    <textarea id="q_inspo_brands" class="tall" placeholder="1. Brand name — why it inspires…&#10;2. Brand name — why it inspires…&#10;3. Brand name — why it inspires…" data-req="1"></textarea>
+    <div class="field-error" id="e_q_inspo_brands">Please answer this question.</div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-ghost" onclick="prev()">← Back</button>
+    <button class="btn btn-primary" onclick="next()">Next →</button>
+  </div>
+</div>
+
+<!-- ── SECTION 8 ── Design direction ──────────────────────────────── -->
+<div class="section-card" data-section="8">
+  <div class="section-eyebrow">Section 8 of 9</div>
+  <h2 class="section-title">Design direction</h2>
+  <p class="section-desc">From the following polarities, help us understand where Arakiko should sit. There are no right or wrong answers — go with your gut. If you'd answer differently for different contexts, choose the primary one.</p>
+
+  <div class="question">
+    <div class="q-label">Accessible or exclusive? <span class="req">*</span></div>
+    <div class="scale-outer">
+      <div class="scale-poles"><span>Accessible</span><span>Exclusive</span></div>
+      <div class="scale-row" id="q_s_access" data-type="scale" data-req="1">
+        <div class="scale-cell"><input type="radio" name="q_s_access" value="1"><label>1</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_access" value="2"><label>2</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_access" value="3"><label>3</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_access" value="4"><label>4</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_access" value="5"><label>5</label></div>
+      </div>
+    </div>
+    <div class="field-error" id="e_q_s_access">Please select a value.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Simple or complex? <span class="req">*</span></div>
+    <div class="scale-outer">
+      <div class="scale-poles"><span>Simple</span><span>Complex</span></div>
+      <div class="scale-row" id="q_s_simple" data-type="scale" data-req="1">
+        <div class="scale-cell"><input type="radio" name="q_s_simple" value="1"><label>1</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_simple" value="2"><label>2</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_simple" value="3"><label>3</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_simple" value="4"><label>4</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_simple" value="5"><label>5</label></div>
+      </div>
+    </div>
+    <div class="field-error" id="e_q_s_simple">Please select a value.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Friendly or corporate? <span class="req">*</span></div>
+    <div class="scale-outer">
+      <div class="scale-poles"><span>Friendly</span><span>Corporate</span></div>
+      <div class="scale-row" id="q_s_friendly" data-type="scale" data-req="1">
+        <div class="scale-cell"><input type="radio" name="q_s_friendly" value="1"><label>1</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_friendly" value="2"><label>2</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_friendly" value="3"><label>3</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_friendly" value="4"><label>4</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_friendly" value="5"><label>5</label></div>
+      </div>
+    </div>
+    <div class="field-error" id="e_q_s_friendly">Please select a value.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Traditional or progressive? <span class="req">*</span></div>
+    <div class="scale-outer">
+      <div class="scale-poles"><span>Traditional</span><span>Progressive</span></div>
+      <div class="scale-row" id="q_s_trad" data-type="scale" data-req="1">
+        <div class="scale-cell"><input type="radio" name="q_s_trad" value="1"><label>1</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_trad" value="2"><label>2</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_trad" value="3"><label>3</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_trad" value="4"><label>4</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_trad" value="5"><label>5</label></div>
+      </div>
+    </div>
+    <div class="field-error" id="e_q_s_trad">Please select a value.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Serious or playful? <span class="req">*</span></div>
+    <div class="scale-outer">
+      <div class="scale-poles"><span>Serious</span><span>Playful</span></div>
+      <div class="scale-row" id="q_s_serious" data-type="scale" data-req="1">
+        <div class="scale-cell"><input type="radio" name="q_s_serious" value="1"><label>1</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_serious" value="2"><label>2</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_serious" value="3"><label>3</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_serious" value="4"><label>4</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_serious" value="5"><label>5</label></div>
+      </div>
+    </div>
+    <div class="field-error" id="e_q_s_serious">Please select a value.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Urban or natural? <span class="req">*</span></div>
+    <div class="scale-outer">
+      <div class="scale-poles"><span>Urban</span><span>Natural</span></div>
+      <div class="scale-row" id="q_s_urban" data-type="scale" data-req="1">
+        <div class="scale-cell"><input type="radio" name="q_s_urban" value="1"><label>1</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_urban" value="2"><label>2</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_urban" value="3"><label>3</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_urban" value="4"><label>4</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_urban" value="5"><label>5</label></div>
+      </div>
+    </div>
+    <div class="field-error" id="e_q_s_urban">Please select a value.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Ingredient-led or experience-led? <span class="req">*</span></div>
+    <div class="q-hint">Does the brand lead with what's in the can (the science, the formula) or how it makes you feel (the occasion, the calm, the experience)?</div>
+    <div class="scale-outer">
+      <div class="scale-poles"><span>Ingredient-led</span><span>Experience-led</span></div>
+      <div class="scale-row" id="q_s_ingredient" data-type="scale" data-req="1">
+        <div class="scale-cell"><input type="radio" name="q_s_ingredient" value="1"><label>1</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_ingredient" value="2"><label>2</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_ingredient" value="3"><label>3</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_ingredient" value="4"><label>4</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_ingredient" value="5"><label>5</label></div>
+      </div>
+    </div>
+    <div class="field-error" id="e_q_s_ingredient">Please select a value.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Subtle or expressive? <span class="req">*</span></div>
+    <div class="q-hint">How much visual and tonal presence does the brand have — does it whisper or does it own the room?</div>
+    <div class="scale-outer">
+      <div class="scale-poles"><span>Subtle</span><span>Expressive</span></div>
+      <div class="scale-row" id="q_s_subtle" data-type="scale" data-req="1">
+        <div class="scale-cell"><input type="radio" name="q_s_subtle" value="1"><label>1</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_subtle" value="2"><label>2</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_subtle" value="3"><label>3</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_subtle" value="4"><label>4</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_subtle" value="5"><label>5</label></div>
+      </div>
+    </div>
+    <div class="field-error" id="e_q_s_subtle">Please select a value.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Niche or mainstream? <span class="req">*</span></div>
+    <div class="q-hint">Is Arakiko positioning for a passionate niche (functional drink enthusiasts, wellness community) or aiming to cross over to the mass market?</div>
+    <div class="scale-outer">
+      <div class="scale-poles"><span>Niche</span><span>Mainstream</span></div>
+      <div class="scale-row" id="q_s_niche" data-type="scale" data-req="1">
+        <div class="scale-cell"><input type="radio" name="q_s_niche" value="1"><label>1</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_niche" value="2"><label>2</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_niche" value="3"><label>3</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_niche" value="4"><label>4</label></div>
+        <div class="scale-cell"><input type="radio" name="q_s_niche" value="5"><label>5</label></div>
+      </div>
+    </div>
+    <div class="field-error" id="e_q_s_niche">Please select a value.</div>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-ghost" onclick="prev()">← Back</button>
+    <button class="btn btn-primary" onclick="next()">Next →</button>
+  </div>
+</div>
+
+<!-- ── SECTION 9 ── About your website ────────────────────────────── -->
+<div class="section-card" data-section="9">
+  <div class="section-eyebrow">Section 9 of 9</div>
+  <h2 class="section-title">About your website</h2>
+  <p class="section-desc">Last section. The goal here is to get a shared picture of what the website needs to do — not just what it looks like.</p>
+
+  <div class="question">
+    <div class="q-label">If a first-time visitor lands on the site and does just one thing, what should that be? <span class="req">*</span></div>
+    <div class="options-list" id="q_site_purpose" data-type="radio" data-req="1">
+      <label class="option-item"><input type="radio" name="q_site_purpose" value="Buy a product"><span>Buy a product</span></label>
+      <label class="option-item"><input type="radio" name="q_site_purpose" value="Understand what Arakiko is and trust it"><span>Understand what Arakiko is and trust it</span></label>
+      <label class="option-item"><input type="radio" name="q_site_purpose" value="Sign up to hear when it's available near them"><span>Sign up to hear when it's available near them</span></label>
+      <label class="option-item"><input type="radio" name="q_site_purpose" value="Find where to buy it locally"><span>Find where to buy it locally</span></label>
+      <label class="option-item"><input type="radio" name="q_site_purpose" value="Contact us about distribution / wholesale"><span>Contact us about distribution / wholesale</span></label>
+    </div>
+    <div class="field-error" id="e_q_site_purpose">Please select an option.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">Do you need the ability to update the site yourself without a developer? <span class="req">*</span></div>
+    <div class="options-list" id="q_cms" data-type="radio" data-req="1">
+      <label class="option-item"><input type="radio" name="q_cms" value="Yes — we need to update content regularly"><span>Yes — we need to update content regularly</span></label>
+      <label class="option-item"><input type="radio" name="q_cms" value="Sometimes — occasional updates would be useful"><span>Sometimes — occasional updates would be useful</span></label>
+      <label class="option-item"><input type="radio" name="q_cms" value="No — we're fine to go through a developer"><span>No — we're fine to go through a developer</span></label>
+    </div>
+    <div class="field-error" id="e_q_cms">Please select an option.</div>
+  </div>
+  <div class="question">
+    <div class="q-label">What pages do you need on the website?</div>
+    <div class="q-hint">List the pages you need. Don't worry about getting this perfect — we'll refine it together.</div>
+    <textarea id="q_pages" placeholder="e.g. Homepage, About / Our story, Shop, Stockists, Contact…"></textarea>
+  </div>
+  <div class="question">
+    <div class="q-label">What needs to happen on this site to convince someone who has never heard of a GABA tonic to try one?</div>
+    <textarea id="q_category_education" class="tall" placeholder="Your answer…"></textarea>
+  </div>
+  <div class="question">
+    <div class="q-label">What are three websites — any category — that get the tone, design, or storytelling right?</div>
+    <div class="q-hint">Include why they resonate with you. Brand positioning, not just aesthetics.</div>
+    <textarea id="q_fav_sites" class="tall" placeholder="1. Site — why…&#10;2. Site — why…&#10;3. Site — why…"></textarea>
+  </div>
+
+  <div class="nav">
+    <button class="btn btn-ghost" onclick="prev()">← Back</button>
+    <button class="btn btn-primary" id="submitBtn" onclick="submitForm()">Submit →</button>
+  </div>
+</div>
+
+<!-- ── COMPLETION ──────────────────────────────────────────────────── -->
+<div class="section-card" data-section="10">
+  <div class="done">
+    <div class="done-mark">✓</div>
+    <h2>That's everything.</h2>
+    <p>Your responses have been submitted. We'll be in touch shortly. You can save a copy for your own records below.</p>
+    <div class="done-actions">
+      <button class="btn btn-dl" onclick="downloadCSV()">↓ Save a copy (CSV)</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+const TOTAL = 10;
+const CLIENT = "Arakiko";
+const FORMSPREE = "https://formspree.io/f/mnjwjvnb";
+let cur = 1;
+
+function show(n) {
+  document.querySelectorAll('.section-card').forEach(el => el.classList.remove('active'));
+  const t = document.querySelector(`[data-section="${n}"]`);
+  if (t) { t.classList.add('active'); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  cur = n;
+  const pct = Math.round(((n - 1) / (TOTAL - 1)) * 100);
+  document.getElementById('pFill').style.width = pct + '%';
+  document.getElementById('pLabel').textContent = n === TOTAL ? 'Completed' : `Section ${n} of ${TOTAL - 1}`;
+}
+
+function next() { if (validate(cur)) show(cur + 1); }
+function prev() { show(cur - 1); }
+
+function validate(n) {
+  const sec = document.querySelector(`[data-section="${n}"]`);
+  let ok = true;
+  // Text / email / textarea
+  sec.querySelectorAll('[data-req="1"]').forEach(el => {
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+      const err = document.getElementById('e_' + el.id);
+      const val = el.value.trim();
+      if (!val) { el.classList.add('invalid'); if (err) err.classList.add('show'); ok = false; }
+      else {
+        el.classList.remove('invalid');
+        if (el.dataset.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
+          el.classList.add('invalid');
+          if (err) { err.textContent = 'Please enter a valid email address.'; err.classList.add('show'); }
+          ok = false;
+        } else { if (err) err.classList.remove('show'); }
+      }
+    }
+  });
+  // Radio groups and scale groups
+  sec.querySelectorAll('[data-type="radio"][data-req="1"], [data-type="scale"][data-req="1"]').forEach(el => {
+    const err = document.getElementById('e_' + el.id);
+    if (!el.querySelector('input:checked')) { if (err) err.classList.add('show'); ok = false; }
+    else { if (err) err.classList.remove('show'); }
+  });
+  // Checkbox groups
+  sec.querySelectorAll('[data-type="checkbox"][data-req="1"]').forEach(el => {
+    const err = document.getElementById('e_' + el.id);
+    if (!el.querySelector('input:checked')) { if (err) err.classList.add('show'); ok = false; }
+    else { if (err) err.classList.remove('show'); }
+  });
+  return ok;
+}
+
+// Enforce checkbox max
+document.addEventListener('change', e => {
+  if (e.target.type === 'checkbox') {
+    const g = e.target.closest('[data-type="checkbox"]');
+    if (g && g.dataset.max) {
+      const max = parseInt(g.dataset.max);
+      if (g.querySelectorAll('input:checked').length > max) e.target.checked = false;
+    }
+    e.target.closest('.option-item')?.classList.toggle('selected', e.target.checked);
+  }
+  if (e.target.type === 'radio') {
+    const g = e.target.closest('.options-list');
+    if (g) g.querySelectorAll('.option-item').forEach(item =>
+      item.classList.toggle('selected', item.querySelector('input') === e.target));
+  }
+});
+
+function collectAll() {
+  const out = [];
+  const push = (q, a) => out.push({ q, a });
+
+  const tv = id => (document.getElementById(id)?.value || '').trim();
+  const rv = name => document.querySelector(`[name="${name}"]:checked`)?.value || '';
+  const cv = id => Array.from(document.querySelectorAll(`#${id} input:checked`)).map(x => x.value).join(', ');
+  const sv = id => {
+    const el = document.getElementById(id);
+    if (!el) return '';
+    const poles = el.closest('.question')?.querySelectorAll('.scale-poles span');
+    const l = poles?.[0]?.innerText || ''; const r = poles?.[1]?.innerText || '';
+    const v = el.querySelector('input:checked')?.value || '';
+    return v ? `${l} ↔ ${r}: ${v}/5` : '';
+  };
+
+  push('Name', tv('q_name')); push('Email', tv('q_email')); push('Role', tv('q_role'));
+  push('About the brand', tv('q_about')); push('What customers say', tv('q_customers_say'));
+  push('Current business stage', rv('q_stage')); push('Stage in 12–24 months', tv('q_stage_next'));
+  push('Positioning frustrations', tv('q_positioning_frustration'));
+  push('Hard conversations', tv('q_hard_convos')); push('If project succeeds…', tv('q_success_easier'));
+  push('Brand location / markets', tv('q_location')); push('Top competitors', tv('q_competitors'));
+  push('When you lose a sale', tv('q_lose_sale')); push('Compared / confused with', tv('q_compared'));
+  push('Category customers think you\'re in', tv('q_category'));
+  push('Why customers choose you', tv('q_why_choose')); push('Not the right choice if…', tv('q_not_right'));
+  push('Flag in the ground promise', tv('q_flag')); push('Known primarily for', tv('q_known_for'));
+  push('Legal/regulatory claims constraints', tv('q_claims'));
+  push('Business type', rv('q_biz_type')); push('Primary buyer', tv('q_primary_buyer'));
+  push('Buyer\'s problem', tv('q_buyer_problem')); push('Purchase trigger', tv('q_buyer_trigger'));
+  push('Buyer objections', tv('q_buyer_objections')); push('Not the right customer', tv('q_not_buyer'));
+  push('Audience gender', rv('q_gender')); push('Audience age', rv('q_age'));
+  push('Audience education', rv('q_edu')); push('Audience city', tv('q_city'));
+  push('Audience occupation', tv('q_occupation')); push('Audience income', rv('q_income'));
+  push('Audience problem', tv('q_aud_problem')); push('Audience trigger', tv('q_aud_trigger'));
+  push('Audience objections', tv('q_aud_objections'));
+  push('Lifestyle / wellness brands', tv('q_lifestyle_brands')); push('Where they work', rv('q_work'));
+  push('Hobbies', tv('q_hobbies')); push('Relationship to alcohol', rv('q_alcohol_rel'));
+  push('Occasion of use', tv('q_occasion')); push('Other audience notes', tv('q_audience_other'));
+  push('Brand values', cv('q_values')); push('Brand adjectives', cv('q_adjectives'));
+  push('Inspiration brands', tv('q_inspo_brands'));
+  push('Accessible ↔ Exclusive', document.querySelector('[name="q_s_access"]:checked')?.value || '');
+  push('Simple ↔ Complex', document.querySelector('[name="q_s_simple"]:checked')?.value || '');
+  push('Friendly ↔ Corporate', document.querySelector('[name="q_s_friendly"]:checked')?.value || '');
+  push('Traditional ↔ Progressive', document.querySelector('[name="q_s_trad"]:checked')?.value || '');
+  push('Serious ↔ Playful', document.querySelector('[name="q_s_serious"]:checked')?.value || '');
+  push('Urban ↔ Natural', document.querySelector('[name="q_s_urban"]:checked')?.value || '');
+  push('Ingredient-led ↔ Experience-led', document.querySelector('[name="q_s_ingredient"]:checked')?.value || '');
+  push('Subtle ↔ Expressive', document.querySelector('[name="q_s_subtle"]:checked')?.value || '');
+  push('Niche ↔ Mainstream', document.querySelector('[name="q_s_niche"]:checked')?.value || '');
+  push('Website primary purpose', rv('q_site_purpose')); push('CMS needed', rv('q_cms'));
+  push('Pages needed', tv('q_pages')); push('Category education on site', tv('q_category_education'));
+  push('Favourite websites', tv('q_fav_sites'));
+  return out.filter(x => x.a);
+}
+
+function downloadCSV() {
+  const data = collectAll();
+  const name = (document.getElementById('q_name')?.value || 'respondent').trim().replace(/[^a-z0-9]/gi, '_');
+  const date = new Date().toISOString().split('T')[0];
+  const rows = [['Question', 'Answer'], ...data.map(r => [
+    '"' + r.q.replace(/"/g, '""') + '"',
+    '"' + r.a.replace(/"/g, '""') + '"'
+  ])];
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(new Blob([csv], { type: 'text/csv' })),
+    download: `Arakiko_BrandDiscovery_${name}_${date}.csv`
+  });
+  a.click(); URL.revokeObjectURL(a.href);
+}
+
+async function submitForm() {
+  if (!validate(cur)) return;
+  const btn = document.getElementById('submitBtn');
+  btn.textContent = 'Submitting…';
+  btn.disabled = true;
+
+  const data = collectAll();
+  const name = (document.getElementById('q_name')?.value || 'Respondent').trim();
+  const email = (document.getElementById('q_email')?.value || '').trim();
+
+  const payload = { _subject: `Brand Discovery — ${CLIENT} — ${name}`, _replyto: email };
+  data.forEach(item => { payload[item.q] = item.a; });
+
+  try {
+    const res = await fetch(FORMSPREE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (res.ok) {
+      show(cur + 1);
+    } else {
+      btn.textContent = 'Submit →';
+      btn.disabled = false;
+      alert('Something went wrong. Please try again, or download your responses and email them to caspianievers@me.com.');
+    }
+  } catch(e) {
+    btn.textContent = 'Submit →';
+    btn.disabled = false;
+    alert('Something went wrong. Please try again, or download your responses and email them to caspianievers@me.com.');
+  }
+}
+
+show(1);
+</script>
+</body>
+</html>
