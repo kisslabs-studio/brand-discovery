@@ -10,7 +10,7 @@ body {
     -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   background: #f7f7f5;
   color: #1a1a1a;
-  font-size: 16px;
+  font-size: 1rem;
   line-height: 1.6;
   min-height: 100vh;
 }
@@ -26,13 +26,13 @@ body {
   z-index: 100;
 }
 .header-brand {
-  font-size: 12px;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   opacity: 0.45;
 }
 .header-client {
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 500;
 }
 .progress-bar-wrap {
@@ -49,14 +49,14 @@ body {
   overflow: hidden;
 }
 .progress-fill {
-  background: #fff;
+  background: #00ff87;
   height: 100%;
   border-radius: 99px;
   transition: width 0.45s ease;
 }
 .progress-label {
   color: rgba(255, 255, 255, 0.38);
-  font-size: 11px;
+  font-size: 0.75rem;
   letter-spacing: 0.07em;
   text-transform: uppercase;
   margin-top: 9px;
@@ -68,7 +68,7 @@ body {
 }
 .section-card {
   background: #fff;
-  border-radius: 14px;
+  border-radius: 0.785rem;
   padding: 44px 52px;
   box-shadow:
     0 1px 4px rgba(0, 0, 0, 0.06),
@@ -90,21 +90,21 @@ body {
   }
 }
 .section-eyebrow {
-  font-size: 11px;
+  font-size: 0.75rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: #aaa;
   margin-bottom: 7px;
 }
 .section-title {
-  font-size: 23px;
+  font-size: 1.5rem;
   font-weight: 650;
   color: #1a1a1a;
   margin-bottom: 14px;
   line-height: 1.25;
 }
 .section-desc {
-  font-size: 14.5px;
+  font-size: 0.875rem;
   color: #666;
   line-height: 1.7;
   margin-bottom: 38px;
@@ -118,17 +118,17 @@ body {
   margin-bottom: 0;
 }
 .q-label {
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 600;
   color: #1a1a1a;
   margin-bottom: 5px;
 }
 .q-label .req {
   color: #c0392b;
-  font-size: 13px;
+  font-size: 0.875rem;
 }
 .q-hint {
-  font-size: 13px;
+  font-size: 0.875rem;
   color: #888;
   margin-bottom: 10px;
   line-height: 1.55;
@@ -140,7 +140,7 @@ textarea {
   border: 1.5px solid #e2e2e2;
   border-radius: 8px;
   padding: 11px 14px;
-  font-size: 15px;
+  font-size: 1rem;
   font-family: inherit;
   color: #1a1a1a;
   background: #fafafa;
@@ -198,10 +198,10 @@ textarea.tall {
   flex-shrink: 0;
 }
 .option-item span {
-  font-size: 15px;
+  font-size: 1rem;
 }
 .checkbox-cap {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #bbb;
   margin-bottom: 9px;
 }
@@ -214,7 +214,7 @@ textarea.tall {
   margin-bottom: 9px;
 }
 .scale-poles span {
-  font-size: 12.5px;
+  font-size: 0.75rem;
   color: #888;
   max-width: 46%;
   line-height: 1.3;
@@ -234,7 +234,7 @@ textarea.tall {
   gap: 5px;
 }
 .scale-cell label {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #aaa;
   cursor: pointer;
 }
@@ -245,7 +245,7 @@ textarea.tall {
   accent-color: #1a1a1a;
 }
 .field-error {
-  font-size: 12px;
+  font-size: 0.75rem;
   color: #c0392b;
   margin-top: 5px;
   display: none;
@@ -271,7 +271,7 @@ textarea.invalid {
   gap: 7px;
   padding: 11px 22px;
   border-radius: 8px;
-  font-size: 15px;
+  font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   border: none;
@@ -297,7 +297,7 @@ textarea.invalid {
 .btn-dl {
   background: #1a1a1a;
   color: #fff;
-  font-size: 15px;
+  font-size: 1rem;
 }
 .btn-dl:hover {
   background: #333;
@@ -306,7 +306,7 @@ textarea.invalid {
   background: #fff;
   color: #1a1a1a;
   border: 1.5px solid #1a1a1a;
-  font-size: 15px;
+  font-size: 1rem;
 }
 .btn-em:hover {
   background: #f4f4f2;
@@ -320,12 +320,12 @@ textarea.invalid {
   margin-bottom: 18px;
 }
 .done h2 {
-  font-size: 26px;
+  font-size: 1.5rem;
   font-weight: 650;
   margin-bottom: 12px;
 }
 .done p {
-  font-size: 15.5px;
+  font-size: 1rem;
   color: #555;
   line-height: 1.7;
   max-width: 420px;
