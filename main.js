@@ -1,6 +1,6 @@
 const TOTAL = 10
 const CLIENT = 'Arakiko'
-const FORMSPREE = 'https://formspree.io/f/mnjwjvnb'
+const FORMSPREE = 'https://formspree.io/f/mojrrawa'
 let cur = 1
 
 function show(n) {
