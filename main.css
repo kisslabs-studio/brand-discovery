@@ -27,17 +27,22 @@ body {
   font-size: 1rem;
   line-height: 1.6;
   min-height: 100vh;
+  padding-top: 112px;
 }
-.header {
+.topbar {
   background: #211d27;
   color: #fff;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+.header {
   padding: 20px 32px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
 }
 .header-brand {
   font-size: 0.75rem;
@@ -50,11 +55,7 @@ body {
   font-weight: 500;
 }
 .progress-bar-wrap {
-  background: #211d27;
   padding: 0 32px 18px;
-  position: sticky;
-  top: 65px;
-  z-index: 99;
 }
 .progress-track {
   background: rgba(255, 255, 255, 0.12);
@@ -92,6 +93,9 @@ body {
 .section-card.active {
   display: block;
   animation: fadeIn 0.22s ease;
+}
+.section-card:focus {
+  outline: none;
 }
 @keyframes fadeIn {
   from {
@@ -299,8 +303,8 @@ textarea.invalid {
 input[type='text']:focus-visible,
 input[type='email']:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid #00ff87;
-  outline-offset: 3px;
+  outline: 2px solid #00ff87;
+  outline-offset: 2px;
 }
 .btn-ghost {
   background: transparent;
@@ -333,6 +337,9 @@ textarea:focus-visible {
   flex-wrap: wrap;
 }
 @media (max-width: 580px) {
+  body {
+    padding-top: 109px;
+  }
   .section-card {
     padding: 28px 22px;
   }
