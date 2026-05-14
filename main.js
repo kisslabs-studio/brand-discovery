@@ -2,19 +2,30 @@ const TOTAL = 10
 const CLIENT = 'Arakiko'
 const FORMSPREE = 'https://formspree.io/f/mojrrawa'
 let cur = 1
+const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
 
 function show(n) {
   document
     .querySelectorAll('.section-card')
-    .forEach((el) => el.classList.remove('active'))
+    .forEach((el) => {
+      el.classList.remove('active')
+      el.setAttribute('aria-hidden', 'true')
+    })
   const t = document.querySelector(`[data-section="${n}"]`)
   if (t) {
     t.classList.add('active')
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    t.setAttribute('aria-hidden', 'false')
+    t.setAttribute('tabindex', '-1')
+    window.scrollTo({
+      top: 0,
+      behavior: reducedMotion.matches ? 'auto' : 'smooth',
+    })
+    t.focus({ preventScroll: true })
   }
   cur = n
   const pct = Math.round(((n - 1) / (TOTAL - 1)) * 100)
   document.getElementById('pFill').style.width = pct + '%'
+  document.getElementById('pFill').setAttribute('aria-valuenow', n)
   document.getElementById('pLabel').textContent =
     n === TOTAL ? 'Completed' : `Section ${n} of ${TOTAL - 1}`
 }
@@ -36,12 +47,15 @@ function validate(n) {
       const val = el.value.trim()
       if (!val) {
         el.classList.add('invalid')
+        el.setAttribute('aria-invalid', 'true')
         if (err) err.classList.add('show')
         ok = false
       } else {
         el.classList.remove('invalid')
+        el.setAttribute('aria-invalid', 'false')
         if (el.dataset.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) {
           el.classList.add('invalid')
+          el.setAttribute('aria-invalid', 'true')
           if (err) {
             err.textContent = 'Please enter a valid email address.'
             err.classList.add('show')
@@ -61,9 +75,11 @@ function validate(n) {
     .forEach((el) => {
       const err = document.getElementById('e_' + el.id)
       if (!el.querySelector('input:checked')) {
+        el.setAttribute('aria-invalid', 'true')
         if (err) err.classList.add('show')
         ok = false
       } else {
+        el.setAttribute('aria-invalid', 'false')
         if (err) err.classList.remove('show')
       }
     })
@@ -71,13 +87,75 @@ function validate(n) {
   sec.querySelectorAll('[data-type="checkbox"][data-req="1"]').forEach((el) => {
     const err = document.getElementById('e_' + el.id)
     if (!el.querySelector('input:checked')) {
+      el.setAttribute('aria-invalid', 'true')
       if (err) err.classList.add('show')
       ok = false
     } else {
+      el.setAttribute('aria-invalid', 'false')
       if (err) err.classList.remove('show')
     }
   })
   return ok
+}
+
+function enhanceAccessibility() {
+  document.querySelectorAll('button').forEach((btn) => {
+    btn.type = 'button'
+  })
+
+  document.querySelectorAll('.field-error').forEach((err) => {
+    err.setAttribute('role', 'alert')
+  })
+
+  document.querySelectorAll('.question').forEach((question, index) => {
+    const label = question.querySelector('.q-label')
+    if (!label) return
+
+    const hint = question.querySelector('.q-hint')
+    const error = question.querySelector('.field-error')
+    const labelId = label.id || `q_label_${index + 1}`
+    label.id = labelId
+
+    if (hint) hint.id = hint.id || `q_hint_${index + 1}`
+
+    const describedBy = [hint?.id, error?.id].filter(Boolean).join(' ')
+    const fields = question.querySelectorAll(
+      'input[type="text"], input[type="email"], textarea',
+    )
+
+    fields.forEach((field) => {
+      field.setAttribute('aria-labelledby', labelId)
+      field.setAttribute('aria-invalid', 'false')
+      if (field.dataset.req) field.setAttribute('aria-required', 'true')
+      if (describedBy) field.setAttribute('aria-describedby', describedBy)
+    })
+
+    question
+      .querySelectorAll(
+        '[data-type="radio"], [data-type="checkbox"], [data-type="scale"]',
+      )
+      .forEach((group) => {
+        group.setAttribute(
+          'role',
+          group.dataset.type === 'checkbox' ? 'group' : 'radiogroup',
+        )
+        group.setAttribute('aria-labelledby', labelId)
+        group.setAttribute('aria-invalid', 'false')
+        if (group.dataset.req) group.setAttribute('aria-required', 'true')
+        if (describedBy) group.setAttribute('aria-describedby', describedBy)
+      })
+
+    question.querySelectorAll('.scale-cell').forEach((cell, cellIndex) => {
+      const input = cell.querySelector('input')
+      const optionLabel = cell.querySelector('label')
+      if (!input || !optionLabel) return
+
+      const optionLabelId =
+        optionLabel.id || `${labelId}_option_${cellIndex + 1}`
+      optionLabel.id = optionLabelId
+      input.setAttribute('aria-labelledby', `${labelId} ${optionLabelId}`)
+    })
+  })
 }
 
 // Enforce checkbox max
@@ -281,4 +359,5 @@ async function submitForm() {
   }
 }
 
+enhanceAccessibility()
 show(1)

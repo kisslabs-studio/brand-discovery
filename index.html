@@ -3,27 +3,48 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Arakiko brand discovery questionnaire for collecting website, audience, positioning, and creative direction inputs."
+    />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#211d27" />
     <title>Arakiko — Brand Discovery</title>
+    <link
+      rel="preload"
+      href="assets/InnovatorGrotesk-Regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <link rel="stylesheet" href="main.css" />
     <script src="main.js" defer></script>
   </head>
   <body>
-    <div class="header">
+    <header class="header">
       <span class="header-brand">Brand Discovery</span>
       <span class="header-client">Arakiko</span>
-    </div>
-    <div class="progress-bar-wrap">
+    </header>
+    <div class="progress-bar-wrap" aria-label="Questionnaire progress">
       <div class="progress-track">
-        <div class="progress-fill" id="pFill" style="width: 0%"></div>
+        <div
+          class="progress-fill"
+          id="pFill"
+          role="progressbar"
+          aria-valuemin="1"
+          aria-valuemax="10"
+          aria-valuenow="1"
+          style="width: 0%"
+        ></div>
       </div>
       <div class="progress-label" id="pLabel">Section 1 of 9</div>
     </div>
 
-    <div class="main">
+    <main class="main">
       <!-- ── SECTION 1 ── About you ─────────────────────────────────────── -->
       <div class="section-card active" data-section="1">
         <div class="section-eyebrow">Section 1 of 9</div>
-        <h2 class="section-title">Arakiko — Brand Discovery</h2>
+        <h1 class="section-title">Arakiko — Brand Discovery</h1>
         <p class="section-desc">
           This questionnaire will help us understand your brand's context,
           ambitions, and requirements for a new website. The output guides our
@@ -848,7 +869,7 @@
             Which are the most relevant values for Arakiko?
             <span class="req">*</span>
           </div>
-          <div class="checkbox-cap">Select up to five.</div>
+          <div class="q-hint">Select up to five.</div>
           <div
             class="options-list"
             id="q_values"
@@ -936,7 +957,7 @@
             Which adjectives describe Arakiko most accurately?
             <span class="req">*</span>
           </div>
-          <div class="checkbox-cap">Select up to five.</div>
+          <div class="q-hint">Select up to five.</div>
           <div
             class="options-list"
             id="q_adjectives"
@@ -1597,18 +1618,18 @@
       <div class="section-card" data-section="10">
         <div class="done">
           <div class="done-mark">✓</div>
-          <h2>That's everything.</h2>
+          <h2 class="section-title">That's everything.</h2>
           <p>
             Your responses have been submitted. We'll be in touch shortly. You
             can save a copy for your own records below.
           </p>
           <div class="done-actions">
-            <button class="btn btn-dl" onclick="downloadCSV()">
+            <button class="btn btn-primary" onclick="downloadCSV()">
               ↓ Save a copy (CSV)
             </button>
           </div>
         </div>
       </div>
-    </div>
+    </main>
   </body>
 </html>

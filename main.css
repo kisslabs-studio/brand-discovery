@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'InnovatorGrotesk';
-  src: url('../assets/InnovatorGrotesk-Regular.woff2')
-    format('woff2-variations');
+  src: url('assets/InnovatorGrotesk-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
 
 *,
@@ -214,11 +214,6 @@ textarea.tall {
 .option-item span {
   font-size: 1rem;
 }
-.checkbox-cap {
-  font-size: 0.75rem;
-  color: #7d7b82;
-  margin-bottom: 9px;
-}
 .scale-outer {
   margin-top: 2px;
 }
@@ -299,6 +294,14 @@ textarea.invalid {
 .btn-primary:hover {
   background: #3a3a3a;
 }
+.btn:focus-visible,
+.option-item:focus-within,
+input[type='text']:focus-visible,
+input[type='email']:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #00ff87;
+  outline-offset: 3px;
+}
 .btn-ghost {
   background: transparent;
   color: #7d7b82;
@@ -308,23 +311,6 @@ textarea.invalid {
   border-color: #7d7b82;
   color: #211d27;
 }
-.btn-dl {
-  background: #211d27;
-  color: #fff;
-  font-size: 1rem;
-}
-.btn-dl:hover {
-  background: #333;
-}
-.btn-em {
-  background: #fff;
-  color: #211d27;
-  border: 1.5px solid #211d27;
-  font-size: 1rem;
-}
-.btn-em:hover {
-  background: #f4f4f2;
-}
 .done {
   text-align: center;
   padding: 12px 0 4px;
@@ -332,11 +318,6 @@ textarea.invalid {
 .done-mark {
   font-size: 52px;
   margin-bottom: 18px;
-}
-.done h2 {
-  font-size: 1.5rem;
-  font-weight: 650;
-  margin-bottom: 12px;
 }
 .done p {
   font-size: 1rem;
@@ -362,5 +343,15 @@ textarea.invalid {
   }
   .main {
     padding: 32px 14px 80px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
   }
 }
